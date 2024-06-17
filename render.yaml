@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: prueba-servidor
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    envVars:
+      - key: DATABASE_URL
+        value: postgresql://postgres:01061996@localhost:5432/payments

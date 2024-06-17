@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compra Exitosa - English Ways</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <!-- Particles.js Background -->
+    <div id="particles-js" data-particles-url="{{ url_for('static', filename='particles.json') }}"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="{{ url_for('index') }}">Inicio</a></li>
+            <li><a href="{{ url_for('index') }}#course">Sobre el Curso</a></li>
+            <li><a href="{{ url_for('index') }}#cta">Comienza Ahora</a></li>
+        </ul>
+    </nav>
+    <div class="logo-container">
+        <img src="{{ url_for('static', filename='logo.jpg') }}" alt="English Ways Logo" class="logo">
+    </div>
+
+    <!-- Success Message Section -->
+    <section id="success" class="container text-center mt-5">
+        <h1 class="neon-text">¡Compra Exitosa!</h1>
+        <p>Gracias por tu compra. Tu transacción ha sido completada con éxito.</p>
+        <p>Hemos enviado un correo electrónico a <strong>{{ email }}</strong> con los detalles para acceder al curso.</p>
+        <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg">Volver al Inicio</a>
+    </section>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</body>
+</html>

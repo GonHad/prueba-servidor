@@ -1,18 +1,21 @@
 from flask import Flask, render_template, request, redirect, url_for
-import psycopg2
-from config import config
+from flask_sqlalchemy import SQLAlchemy
 import os
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
-def get_db_connection():
-    params = config()
-    try:
-        conn = psycopg2.connect(params['database_url'])
-        return conn
-    except psycopg2.DatabaseError as e:
-        print(f"Database connection error: {e}")
-        return None
+class Payment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), nullable=False)
+    fecha_nacimiento = db.Column(db.String(100), nullable=False)
+    dni = db.Column(db.String(100), nullable=False)
+    tarjeta_credito = db.Column(db.String(100), nullable=False)
+    fecha_expiracion = db.Column(db.String(100), nullable=False)
+    codigo_seguridad = db.Column(db.String(100), nullable=False)
 
 @app.route('/')
 def index():
@@ -29,19 +32,14 @@ def payment():
         fecha_expiracion = request.form['fecha_expiracion']
         codigo_seguridad = request.form['codigo_seguridad']
 
-        conn = get_db_connection()
-        if conn is None:
-            return "Internal Server Error: Database connection failed", 500
-        cur = conn.cursor()
-        cur.execute(
-            "INSERT INTO compradores (nombre, email, fecha_nacimiento, dni, tarjeta_credito, fecha_expiracion, codigo_seguridad) VALUES (%s, %s, %s, %s, %s, %s, %s)",
-            (nombre, email, fecha_nacimiento, dni, tarjeta_credito, fecha_expiracion, codigo_seguridad)
+        new_payment = Payment(
+            nombre=nombre, email=email, fecha_nacimiento=fecha_nacimiento,
+            dni=dni, tarjeta_credito=tarjeta_credito, fecha_expiracion=fecha_expiracion,
+            codigo_seguridad=codigo_seguridad
         )
-        conn.commit()
-        cur.close()
-        conn.close()
+        db.session.add(new_payment)
+        db.session.commit()
 
-        # Redirigir a la página de éxito con el correo electrónico del comprador
         return redirect(url_for('success', email=email))
     return render_template('payment.html')
 
@@ -51,6 +49,6 @@ def success():
     return render_template('success.html', email=email)
 
 if __name__ == '__main__':
-    from os import environ
-    app.run(host='0.0.0.0', port=int(environ.get('PORT', 5000)))
-
+    with app.app_context():
+        db.create_all()
+    app.run(debug=True)
